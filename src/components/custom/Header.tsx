@@ -3,8 +3,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import Link from "next/link";
 import { Phone, ShoppingBasket } from "lucide-react";
 import { Button } from "../ui/button";
+import { Tenant } from "@/lib/types";
 
-const Header = () => {
+const Header = async () => {
+	const tenantResponse = await fetch(`${process.env.BACKEND_URL}/api/auth/tenants?perPage=100`, {
+		next: {
+			revalidate: 3600, // 1 hour
+		},
+	});
+	if (!tenantResponse.ok) {
+		throw new Error("Failed to fetch tenant information");
+	}
+	const resturants: { data: Tenant[] } = await tenantResponse.json();
+	console.log("tenants", resturants);
 	return (
 		<header className="bg-white">
 			<nav className="container py-5 flex items-center justify-between">
@@ -28,9 +39,13 @@ const Header = () => {
 							<SelectValue placeholder="Select Restaurant" />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="chessy">Cheesy Delight</SelectItem>
-							<SelectItem value="pizza-hut">Pizza Hut</SelectItem>
-							<SelectItem value="kids-corner">Kids corner</SelectItem>
+							{resturants.data.map((resturant) => {
+								return (
+									<SelectItem key={resturant.id} value={resturant.id}>
+										{resturant.name}
+									</SelectItem>
+								);
+							})}
 						</SelectContent>
 					</Select>
 				</div>
