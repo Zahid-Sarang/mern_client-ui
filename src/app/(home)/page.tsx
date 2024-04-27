@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import ProductCard, { Product } from "./components/product-card";
+import { Category } from "@/lib/types";
 
 const products: Product[] = [
 	{
@@ -34,7 +35,18 @@ const products: Product[] = [
 	},
 ];
 
-export default function Home() {
+export default async function Home() {
+	const categoryResponse = await fetch(`${process.env.BACKEND_URL}/api/catalog/categories`, {
+		next: {
+			revalidate: 3600,
+		},
+	});
+
+	if (!categoryResponse.ok) {
+		throw new Error(" Failed to fetch categories");
+	}
+	const categories: Category[] = await categoryResponse.json();
+	console.log(categories);
 	return (
 		<>
 			<section className="bg-white">
@@ -59,12 +71,13 @@ export default function Home() {
 				<div className="container py-12">
 					<Tabs defaultValue="pizza">
 						<TabsList>
-							<TabsTrigger value="pizza" className="text-md">
-								Pizza
-							</TabsTrigger>
-							<TabsTrigger value="beverages" className="text-md">
-								Beverages
-							</TabsTrigger>
+							{categories.map((category) => {
+								return (
+									<TabsTrigger key={category._id} value={category._id} className="text-md">
+										{category.name}
+									</TabsTrigger>
+								);
+							})}
 						</TabsList>
 						<TabsContent value="pizza">
 							<div className="grid grid-cols-4 gap-6 mt-6">
