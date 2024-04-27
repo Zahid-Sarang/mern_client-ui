@@ -15,7 +15,7 @@ const Header = async () => {
 		throw new Error("Failed to fetch tenant information");
 	}
 	const resturants: { data: Tenant[] } = await tenantResponse.json();
-	console.log("tenants", resturants);
+
 	return (
 		<header className="bg-white">
 			<nav className="container py-5 flex items-center justify-between">

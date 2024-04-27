@@ -1,13 +1,7 @@
+"use client";
 import React from "react";
 import Image from "next/image";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -16,6 +10,9 @@ import { Label } from "@/components/ui/label";
 import ToppingList from "./topping-list";
 import { Product } from "@/lib/types";
 const ProductModal = ({ product }: { product: Product }) => {
+	const handleAddToCart = () => {
+		// todo: add to cart logic
+	};
 	return (
 		<>
 			<Dialog>
@@ -25,7 +22,7 @@ const ProductModal = ({ product }: { product: Product }) => {
 				<DialogContent className="max-w-3xl p-0">
 					<div className="flex">
 						<div className="w-1/3 bg-white rounded p-8 flex items-center justify-center">
-							<Image src={"/pizza-main.png"} width={450} height={450} alt={product.name} />
+							<Image src={product.image} width={450} height={450} alt={product.name} />
 						</div>
 						<div className="w-2/3 p-8">
 							<h3 className="text-xl font-bold">{product.name}</h3>
@@ -57,7 +54,7 @@ const ProductModal = ({ product }: { product: Product }) => {
 
 							<div className="flex items-center justify-between mt-12">
 								<span className="font-bold">₹400</span>
-								<Button>
+								<Button onClick={() => handleAddToCart}>
 									<ShoppingCart size={20} />
 									<span className="ml-2">Add to cart</span>
 								</Button>
