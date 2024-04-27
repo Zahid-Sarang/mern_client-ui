@@ -1,25 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
-import ProductCard from "./components/product-card";
-import { Category, Product } from "@/lib/types";
+import ProductList from "./components/product-list";
+import { Suspense } from "react";
 
 export default async function Home() {
-	// todo: do concurent request => Promise.all()
-	const categoryResponse = await fetch(`${process.env.BACKEND_URL}/api/catalog/categories`, {
-		next: {
-			revalidate: 3600,
-		},
-	});
-
-	if (!categoryResponse.ok) {
-		throw new Error(" Failed to fetch categories");
-	}
-	const categories: Category[] = await categoryResponse.json();
-
-	// todo: add pagination and add dynamic tenant Id
-	const productResponse = await fetch(`${process.env.BACKEND_URL}/api/catalog/products?perPage=100&tenantId=8`);
-	const products: { data: Product[] } = await productResponse.json();
 	return (
 		<>
 			<section className="bg-white">
@@ -39,35 +23,10 @@ export default async function Home() {
 					</div>
 				</div>
 			</section>
-
-			<section>
-				<div className="container py-12">
-					<Tabs defaultValue={categories[0]._id}>
-						<TabsList>
-							{categories.map((category) => {
-								return (
-									<TabsTrigger key={category._id} value={category._id} className="text-md">
-										{category.name}
-									</TabsTrigger>
-								);
-							})}
-						</TabsList>
-						{categories.map((category) => {
-							return (
-								<TabsContent key={category._id} value={category._id}>
-									<div className="grid grid-cols-4 gap-6 mt-6">
-										{products.data
-											.filter((product) => product.category._id === category._id)
-											.map((product) => (
-												<ProductCard product={product} key={product._id} />
-											))}
-									</div>
-								</TabsContent>
-							);
-						})}
-					</Tabs>
-				</div>
-			</section>
+			{/* todo: add sekeleton components */}
+			<Suspense fallback={"Loading..."}>
+				<ProductList />
+			</Suspense>
 		</>
 	);
 }
