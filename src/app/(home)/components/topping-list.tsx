@@ -2,14 +2,12 @@ import React, { useEffect, useState } from "react";
 import ToppingCard from "./topping-card";
 import { Topping } from "@/lib/types";
 
-const ToppingList = () => {
+const ToppingList = async () => {
 	const [toppings, setToppings] = useState<Topping[]>([]);
 	useEffect(() => {
 		const fetchData = async () => {
-			// todo: make tenant dymanic
 			const toppingResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?page=1&limit=2`);
 			const toppings: { data: Topping[] } = await toppingResponse.json();
-			console.log(toppings);
 			setToppings(toppings.data);
 		};
 		fetchData();
@@ -18,13 +16,17 @@ const ToppingList = () => {
 	const [selectedToppings, setSelectedToppings] = React.useState<Topping[]>([]);
 
 	const handleCheckBoxCheck = (topping: Topping) => {
-		const isAlreadyChecked = selectedToppings.some((element: Topping) => element.id === topping.id);
-		if (isAlreadyChecked) {
-			setSelectedToppings((prev) => prev.filter((elem: Topping) => elem.id !== topping.id));
+		const isAlreadyExists = selectedToppings.some((element: Topping) => element._id === topping._id);
+		console.log(topping)
+
+		if (isAlreadyExists) {
+			setSelectedToppings((prev) => prev.filter((elm: Topping) => elm._id !== topping._id));
 			return;
 		}
+
 		setSelectedToppings((prev: Topping[]) => [...prev, topping]);
 	};
+
 	return (
 		<section className="mt-6">
 			<h3>Extra toppings</h3>
@@ -33,7 +35,7 @@ const ToppingList = () => {
 					return (
 						<ToppingCard
 							topping={topping}
-							key={topping.id}
+							key={topping._id}
 							selectedToppings={selectedToppings}
 							handleCheckBoxCheck={handleCheckBoxCheck}
 						/>

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
@@ -12,6 +12,7 @@ import { Product } from "@/lib/types";
 const ProductModal = ({ product }: { product: Product }) => {
 	const handleAddToCart = () => {
 		// todo: add to cart logic
+		console.log("add to cart......");
 	};
 	return (
 		<>
@@ -50,7 +51,9 @@ const ProductModal = ({ product }: { product: Product }) => {
 								);
 							})}
 
-							<ToppingList />
+							<Suspense fallback={"Toppings Loading...."}>
+								<ToppingList />
+							</Suspense>
 
 							<div className="flex items-center justify-between mt-12">
 								<span className="font-bold">₹400</span>

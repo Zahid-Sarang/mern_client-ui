@@ -14,7 +14,7 @@ export default async function Home() {
 							<span className="text-primary">Only 45 minutes</span>
 						</h1>
 						<p className="text-2xl mt-8 max-w-lg leading-snug">
-							Enjoy a Free MEal if Your Order Takes More Than 45 Minutes!
+							Enjoy a Free Meal if Your Order Takes More Than 45 Minutes!
 						</p>
 						<Button className="my-8 text-lg rounded-full py-7 px-6 font-bold">Get you pizza now</Button>
 					</div>

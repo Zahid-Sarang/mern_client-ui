@@ -1,19 +1,19 @@
 "use client";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Topping } from "@/lib/types";
+import React from "react";
 import { cn } from "@/lib/utils";
 import { CircleCheck } from "lucide-react";
-import Image from "next/image";
-import React from "react";
+import { Topping } from "@/lib/types";
 
 type PropType = {
 	topping: Topping;
 	selectedToppings: Topping[];
 	handleCheckBoxCheck: (topping: Topping) => void;
 };
-
 const ToppingCard = ({ topping, selectedToppings, handleCheckBoxCheck }: PropType) => {
-	const isCurrentSelected = selectedToppings.some((element) => element.id === topping.id);
+	const isCurrentSelected = selectedToppings.some((element) => element._id === topping._id);
+
 	return (
 		<Button
 			onClick={() => handleCheckBoxCheck(topping)}
