@@ -8,13 +8,28 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ShoppingCart } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import ToppingList from "./topping-list";
-import { Product } from "@/lib/types";
+import { Product, Topping } from "@/lib/types";
 
 type ChosenConfig = {
 	[key: string]: string;
 };
 const ProductModal = ({ product }: { product: Product }) => {
 	const [chosenConfig, setChosenConfig] = useState<ChosenConfig>();
+
+	const [selectedToppings, setSelectedToppings] = React.useState<Topping[]>([]);
+
+	const handleCheckBoxCheck = (topping: Topping) => {
+		const isAlreadyExists = selectedToppings.some((element: Topping) => element._id === topping._id);
+
+		startTransition(() => {
+			if (isAlreadyExists) {
+				setSelectedToppings((prev) => prev.filter((elm: Topping) => elm._id !== topping._id));
+				return;
+			}
+
+			setSelectedToppings((prev: Topping[]) => [...prev, topping]);
+		});
+	};
 
 	const handleRadioChange = (key: string, data: string) => {
 		startTransition(() => {
@@ -72,7 +87,7 @@ const ProductModal = ({ product }: { product: Product }) => {
 							})}
 
 							<Suspense fallback={"Toppings Loading...."}>
-								<ToppingList />
+								<ToppingList selectedToppings={selectedToppings} handleCheckBoxCheck={handleCheckBoxCheck} />
 							</Suspense>
 
 							<div className="flex items-center justify-between mt-12">
