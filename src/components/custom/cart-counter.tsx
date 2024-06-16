@@ -7,6 +7,7 @@ import React from "react";
 
 const CartCounter = () => {
 	const dispatch = useAppDispatch();
+	const cartItems = useAppSelector((state) => state.cart.cartItem);
 
 	return (
 		<>
@@ -14,7 +15,9 @@ const CartCounter = () => {
 				<Link href={"/cart"}>
 					<ShoppingBasket className="hover:text-primary cursor-pointer" />
 				</Link>
-				<span className="absolute -top-4 -right-5 h-6 w-6 flex items-center justify-center rounded-full bg-primary font-bold text-white"></span>
+				<span className="absolute -top-4 -right-5 h-6 w-6 flex items-center justify-center rounded-full bg-primary font-bold text-white">
+					{cartItems.length}
+				</span>
 			</div>
 		</>
 	);
