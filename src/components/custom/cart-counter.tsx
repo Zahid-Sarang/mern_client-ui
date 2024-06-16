@@ -7,7 +7,7 @@ import React from "react";
 
 const CartCounter = () => {
 	const dispatch = useAppDispatch();
-	const cartItems = useAppSelector((state) => state.cart.cartItem);
+	const cartItems = useAppSelector((state) => state.cart.cartItems);
 
 	return (
 		<>
