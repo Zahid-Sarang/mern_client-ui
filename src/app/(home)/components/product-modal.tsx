@@ -92,6 +92,7 @@ const ProductModal = ({ product }: { product: Product }) => {
 		};
 
 		dispatch(addToCart(itemToAdd));
+		setSelectedToppings([]);
 		setDailogOpen(false);
 	};
 	return (
