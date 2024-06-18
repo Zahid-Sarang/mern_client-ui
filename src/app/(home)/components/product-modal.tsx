@@ -17,6 +17,7 @@ type ChosenConfig = {
 	[key: string]: string;
 };
 const ProductModal = ({ product }: { product: Product }) => {
+	const [dialogOpen, setDailogOpen] = useState(false);
 	const dispatch = useAppDispatch();
 	const cartItems = useAppSelector((state) => state.cart.cartItems);
 
@@ -91,10 +92,11 @@ const ProductModal = ({ product }: { product: Product }) => {
 		};
 
 		dispatch(addToCart(itemToAdd));
+		setDailogOpen(false);
 	};
 	return (
 		<>
-			<Dialog>
+			<Dialog open={dialogOpen} onOpenChange={setDailogOpen}>
 				<DialogTrigger className="bg-orange-200 hover:bg-orange-300 text-orange-500 px-6 py-2 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-liner transition-all duration-150">
 					Choose
 				</DialogTrigger>
