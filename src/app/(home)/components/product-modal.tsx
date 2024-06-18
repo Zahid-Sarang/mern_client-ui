@@ -9,14 +9,16 @@ import { ShoppingCart } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import ToppingList from "./topping-list";
 import { Product, Topping } from "@/lib/types";
-import { useAppDispatch } from "@/lib/store/hooks";
-import { addToCart } from "@/lib/store/features/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { CartItem, addToCart } from "@/lib/store/features/cart/cartSlice";
+import { hashTheItem } from "@/lib/utils";
 
 type ChosenConfig = {
 	[key: string]: string;
 };
 const ProductModal = ({ product }: { product: Product }) => {
 	const dispatch = useAppDispatch();
+	const cartItems = useAppSelector((state) => state.cart.cartItems);
 
 	const defaultConfiguration = Object.entries(product.category.priceConfiguration)
 		.map(([key, value]) => {
@@ -37,6 +39,22 @@ const ProductModal = ({ product }: { product: Product }) => {
 		}, 0);
 		return configPricing + toppingsTotalPrice;
 	}, [chosenConfig, product.priceConfiguration, selectedToppings]);
+
+	const alreadyHasInCart = React.useMemo(() => {
+		const currentConfiguration = {
+			_id: product._id,
+			name: product.name,
+			image: product.image,
+			priceConfiguration: product.priceConfiguration,
+			chosenConfiguration: {
+				priceConfiguration: { ...chosenConfig },
+				selectedToppings: selectedToppings,
+			},
+			qty: 1,
+		};
+		const hash = hashTheItem(currentConfiguration);
+		return cartItems.some((items) => items.hash === hash);
+	}, [product, chosenConfig, selectedToppings, cartItems]);
 
 	const handleCheckBoxCheck = (topping: Topping) => {
 		const isAlreadyExists = selectedToppings.some((element: Topping) => element._id === topping._id);
@@ -60,12 +78,16 @@ const ProductModal = ({ product }: { product: Product }) => {
 	};
 
 	const handleAddToCart = (product: Product) => {
-		const itemToAdd = {
-			product,
+		const itemToAdd: CartItem = {
+			_id: product._id,
+			name: product.name,
+			image: product.image,
+			priceConfiguration: product.priceConfiguration,
 			chosenConfiguration: {
 				priceConfiguration: chosenConfig!,
 				selectedToppings: selectedToppings,
 			},
+			qty: 1,
 		};
 
 		dispatch(addToCart(itemToAdd));
@@ -113,9 +135,9 @@ const ProductModal = ({ product }: { product: Product }) => {
 								);
 							})}
 
-							{/* todo: make this condition dynamic */}
+							{/* todo: make this condition dynamic display toppings based on the product */}
 
-							{product.category.name === "pizza" && (
+							{product.category.name !== "pizza" && (
 								<Suspense fallback={"Toppings Loading...."}>
 									<ToppingList selectedToppings={selectedToppings} handleCheckBoxCheck={handleCheckBoxCheck} />
 								</Suspense>
@@ -123,9 +145,14 @@ const ProductModal = ({ product }: { product: Product }) => {
 
 							<div className="flex items-center justify-between mt-12">
 								<span className="font-bold">₹{totalPrice}</span>
-								<Button onClick={() => handleAddToCart(product)}>
+
+								<Button
+									className={alreadyHasInCart ? "bg-gray-700 " : "bg-primary"}
+									disabled={alreadyHasInCart}
+									onClick={() => handleAddToCart(product)}
+								>
 									<ShoppingCart size={20} />
-									<span className="ml-2">Add to cart</span>
+									<span className="ml-2">{alreadyHasInCart ? "Already in cart" : "Add to cart"}</span>
 								</Button>
 							</div>
 						</div>
