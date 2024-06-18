@@ -1,10 +1,10 @@
 import React from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import Link from "next/link";
 import { Phone } from "lucide-react";
 import { Button } from "../ui/button";
 import { Tenant } from "@/lib/types";
 import dynamic from "next/dynamic";
+import TenantSelect from "./tenant-select";
 
 const CartCounterWithoutSSR = dynamic(() => import("./cart-counter"), { ssr: false });
 
@@ -17,7 +17,7 @@ const Header = async () => {
 	if (!tenantResponse.ok) {
 		throw new Error("Failed to fetch tenant information");
 	}
-	const resturants: { data: Tenant[] } = await tenantResponse.json();
+	const restaurants: { data: Tenant[] } = await tenantResponse.json();
 
 	return (
 		<header className="bg-white">
@@ -37,20 +37,7 @@ const Header = async () => {
 							fill="#484848"
 						/>
 					</svg>
-					<Select>
-						<SelectTrigger className="w-[180px]">
-							<SelectValue placeholder="Select Restaurant" />
-						</SelectTrigger>
-						<SelectContent>
-							{resturants.data.map((resturant) => {
-								return (
-									<SelectItem key={resturant.id} value={resturant.id}>
-										{resturant.name}
-									</SelectItem>
-								);
-							})}
-						</SelectContent>
-					</Select>
+					<TenantSelect restaurants={restaurants} />
 				</div>
 				<div className="flex items-center gap-4">
 					<ul className="flex items-center font-medium space-x-4">

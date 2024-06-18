@@ -3,7 +3,8 @@ import React from "react";
 import ProductCard from "./product-card";
 import { Category, Product } from "@/lib/types";
 
-const ProductList = async () => {
+const ProductList = async ({ searchParams }: { searchParams: { restaurantId: string } }) => {
+	console.log("searchParams", searchParams);
 	// todo: do concurent request => Promise.all()
 	const categoryResponse = await fetch(`${process.env.BACKEND_URL}/api/catalog/categories`, {
 		next: {
@@ -16,8 +17,10 @@ const ProductList = async () => {
 	}
 	const categories: Category[] = await categoryResponse.json();
 
-	// todo: add pagination and add dynamic tenant Id
-	const productResponse = await fetch(`${process.env.BACKEND_URL}/api/catalog/products?perPage=100&tenantId=8`);
+	// todo: add pagination
+	const productResponse = await fetch(
+		`${process.env.BACKEND_URL}/api/catalog/products?perPage=100&tenantId=${searchParams.restaurantId}`
+	);
 	const products: { data: Product[] } = await productResponse.json();
 	return (
 		<section>
