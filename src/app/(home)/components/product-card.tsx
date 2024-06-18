@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 
 import { Product } from "@/lib/types";
 import ProductModal from "./product-modal";
+import { getFromPrice } from "@/lib/utils";
 
 type PropType = { product: Product };
 const ProductCard = ({ product }: PropType) => {
@@ -20,7 +21,7 @@ const ProductCard = ({ product }: PropType) => {
 				<CardFooter className="flex items-center justify-between mt-4">
 					<p className="space-x-1">
 						<span>From</span>
-						<span className="font-bold">₹{100}</span>
+						<span className="font-bold">₹{getFromPrice(product)}</span>
 					</p>
 					<ProductModal product={product} />
 				</CardFooter>
