@@ -5,13 +5,25 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, CircleCheck } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import ToppingList from "./topping-list";
 import { Product, Topping } from "@/lib/types";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { CartItem, addToCart } from "@/lib/store/features/cart/cartSlice";
 import { hashTheItem } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
+
+const SucessToast = () => {
+	return (
+		<>
+			<div className="flex items-center gap-2">
+				<CircleCheck className="text-green-700" />
+				<span className="font-bold"> Added to cart</span>
+			</div>
+		</>
+	);
+};
 
 type ChosenConfig = {
 	[key: string]: string;
@@ -20,6 +32,7 @@ const ProductModal = ({ product }: { product: Product }) => {
 	const [dialogOpen, setDailogOpen] = useState(false);
 	const dispatch = useAppDispatch();
 	const cartItems = useAppSelector((state) => state.cart.cartItems);
+	const { toast } = useToast();
 
 	const defaultConfiguration = Object.entries(product.category.priceConfiguration)
 		.map(([key, value]) => {
@@ -94,6 +107,10 @@ const ProductModal = ({ product }: { product: Product }) => {
 		dispatch(addToCart(itemToAdd));
 		setSelectedToppings([]);
 		setDailogOpen(false);
+		toast({
+			// @ts-ignore
+			title: <SucessToast />,
+		});
 	};
 	return (
 		<>
