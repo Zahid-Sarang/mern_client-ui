@@ -23,10 +23,10 @@ export default async function login(prevState: any, formdata: FormData) {
 
 		if (!response.ok) {
 			const error = await response.json();
-			console.log(error);
+
 			return {
 				type: "error",
-				message: error.errors[0].message,
+				message: error.errors[0].msg,
 			};
 		}
 		const responseCookies = response.headers.getSetCookie();
