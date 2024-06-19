@@ -5,10 +5,13 @@ import { Button } from "../ui/button";
 import { Tenant } from "@/lib/types";
 import dynamic from "next/dynamic";
 import TenantSelect from "./tenant-select";
+import { getSession } from "@/lib/session";
 
 const CartCounterWithoutSSR = dynamic(() => import("./cart-counter"), { ssr: false });
 
 const Header = async () => {
+	const session = await getSession();
+
 	const tenantResponse = await fetch(`${process.env.BACKEND_URL}/api/auth/tenants?perPage=100`, {
 		next: {
 			revalidate: 3600, // 1 hour
@@ -57,7 +60,7 @@ const Header = async () => {
 						<Phone />
 						<span>+91 9988 009 811</span>
 					</div>
-					<Button size={"sm"}>Logout</Button>
+					<Button size={"sm"}>{session ? "Logout" : "Login"}</Button>
 				</div>
 			</nav>
 		</header>
