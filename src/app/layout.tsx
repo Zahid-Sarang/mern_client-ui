@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Header from "@/components/custom/header";
 import StoreProvider from "./storeProvider";
 import { Toaster } from "@/components/ui/toaster";
+import Refresher from "@/components/custom/refresh";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-,manrope" });
 
@@ -22,9 +23,11 @@ export default function RootLayout({
 		<html lang="en">
 			<StoreProvider>
 				<body className={cn("min-h-screen bg-background font-manrope antialiased", manrope.variable)}>
-					<Header />
-					<main>{children}</main>
-					<Toaster />
+					<Refresher>
+						<Header />
+						<main>{children}</main>
+						<Toaster />
+					</Refresher>
 				</body>
 			</StoreProvider>
 		</html>
