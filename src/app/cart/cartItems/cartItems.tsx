@@ -4,11 +4,13 @@ import CartItem from "./cartItem";
 import Link from "next/link";
 import { useAppSelector } from "@/lib/store/hooks";
 import { ArrowRight, ShoppingCart } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { getItemTotal } from "@/lib/utils";
 
 const CartItems = () => {
+	const router = useRouter();
+
 	const searchParams = useSearchParams();
 	const cart = useAppSelector((state) => state.cart.cartItems);
 
@@ -48,7 +50,7 @@ const CartItems = () => {
 			))}
 			<div className="flex justify-between items-center">
 				<span className="font-bold text-xl">&#8377;{finalTotal}</span>
-				<Button>
+				<Button onClick={() => router.push(`/checkout/?restaurantId=${searchParams.get("restaurantId")}`)}>
 					Checkout
 					<ArrowRight size={16} className="ml-2" />
 				</Button>
