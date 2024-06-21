@@ -20,10 +20,12 @@ import { redirect } from "next/navigation";
 export default async function Checkout({ searchParams }: { searchParams: { restaurantId: string } }) {
 	const session = await getSession();
 
-	const queryString = new URLSearchParams(searchParams).toString();
+	const sParams = new URLSearchParams(searchParams);
+	const existingQueryString = sParams.toString();
+	sParams.append("return-to", `/checkout?${existingQueryString}`);
 
 	if (!session) {
-		return redirect(`/login?${queryString}`);
+		return redirect(`/login?${sParams}`);
 	}
 	return (
 		<div className="flex container gap-6 mt-16">
