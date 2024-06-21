@@ -48,9 +48,12 @@ const AddAddress = ({ customerId }: { customerId: string }) => {
 		},
 	});
 
-	const handleAddressAdd = (data: z.infer<typeof FormSchema>) => {
-		console.log("data", data);
-		mutate(data.address);
+	const handleAddressAdd = (e: React.FormEvent<HTMLFormElement>) => {
+		e.stopPropagation();
+
+		return addressForm.handleSubmit((data: z.infer<typeof FormSchema>) => {
+			mutate(data.address);
+		})(e);
 	};
 
 	return (
@@ -68,7 +71,7 @@ const AddAddress = ({ customerId }: { customerId: string }) => {
 					</div>
 				)}
 				<Form {...addressForm}>
-					<form onSubmit={addressForm.handleSubmit(handleAddressAdd)}>
+					<form onSubmit={handleAddressAdd}>
 						<DialogHeader>
 							<DialogTitle>Add Address</DialogTitle>
 							<DialogDescription>We can save your address for next time order.</DialogDescription>
