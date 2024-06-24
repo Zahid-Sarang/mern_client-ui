@@ -2,7 +2,8 @@
 
 import { z } from "zod";
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { v4 as uuidv4 } from "uuid";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Coins, CreditCard, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,8 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { getCustomer } from "@/lib/http/api";
-import { Customer } from "@/lib/types";
+import { createOrder, getCustomer } from "@/lib/http/api";
+import { Customer, Orderdata } from "@/lib/types";
 
 import AddAddress from "./addAddress";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
@@ -35,6 +36,7 @@ const CustomerForm = () => {
 	});
 
 	const chosenCouponCode = React.useRef("");
+	const idempotencyKeyRef = React.useRef("");
 	const cart = useAppSelector((state) => state.cart);
 
 	const searchParams = useSearchParams();
@@ -44,6 +46,18 @@ const CustomerForm = () => {
 		queryFn: async () => {
 			return await getCustomer().then((res) => res.data);
 		},
+	});
+
+	const { mutate } = useMutation({
+		mutationKey: ["order"],
+		mutationFn: async (orderData: Orderdata) => {
+			const idempotencyKey = idempotencyKeyRef.current
+				? idempotencyKeyRef.current
+				: (idempotencyKeyRef.current = uuidv4() + customer?._id);
+
+			return await createOrder(orderData, idempotencyKey);
+		},
+		retry: 3,
 	});
 
 	if (isLoading) {
@@ -57,18 +71,16 @@ const CustomerForm = () => {
 			alert("Please select a restaurant!");
 			return;
 		}
-
-		const orderData = {
+		const orderData: Orderdata = {
 			cart: cart.cartItems,
 			couponCode: chosenCouponCode.current ? chosenCouponCode.current : "",
 			tenantId: tenantId,
-			customerId: customer?._id,
+			customerId: customer?._id as string,
 			comment: data.comment,
 			address: data.address,
 			paymentMode: data.paymentMode,
 		};
-
-		console.log("complete order data", orderData);
+		mutate(orderData);
 	};
 
 	return (
