@@ -4,7 +4,7 @@ import { z } from "zod";
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Coins, CreditCard, Plus } from "lucide-react";
+import { Coins, CreditCard } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -55,9 +55,19 @@ const CustomerForm = () => {
 				? idempotencyKeyRef.current
 				: (idempotencyKeyRef.current = uuidv4() + customer?._id);
 
-			return await createOrder(orderData, idempotencyKey);
+			return await createOrder(orderData, idempotencyKey).then((res) => res.data);
 		},
 		retry: 3,
+		onSuccess: (data: { paymentUrl: string | null }) => {
+			if (data.paymentUrl) {
+				window.location.href = data.paymentUrl;
+			}
+
+			alert("Order placed successfully");
+
+			// todo: This will happen if payment mode is Cash
+			// todo: clear the cart , and redirect the user to order status page
+		},
 	});
 
 	if (isLoading) {
