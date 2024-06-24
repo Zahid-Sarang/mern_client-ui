@@ -13,7 +13,7 @@ const TAXES_PERCENTAGE = 18;
 const DELIVERY_CHARGES = 50;
 // TODO: move this to the server and calculate accordingly
 
-const OrderSummary = () => {
+const OrderSummary = ({ handleCouponCodeChange }: { handleCouponCodeChange: (code: string) => void }) => {
 	const cart = useAppSelector((state) => state.cart.cartItems);
 
 	const searchParams = useSearchParams();
@@ -71,10 +71,12 @@ const OrderSummary = () => {
 			console.log("data recived", data);
 			if (data.valid) {
 				setDiscountError("");
+				handleCouponCodeChange(couponCodeRef.current ? couponCodeRef.current.value : "");
 				setDiscountPercentage(data.discount);
 				return;
 			}
 			setDiscountError("Coupon is expired");
+			handleCouponCodeChange("");
 			setDiscountPercentage(0);
 		},
 	});
@@ -115,7 +117,7 @@ const OrderSummary = () => {
 						<span className={discountPercentage ? "line-through text-gray-400" : "text-green-600"}>
 							₹{grandWithoutDiscountTotal}
 						</span>
-						{discountPercentage ? <span className="text-green-600">{grandWithDiscountTotal}</span> : null}
+						{discountPercentage ? <span className="text-green-600">₹{grandWithDiscountTotal}</span> : null}
 					</span>
 				</div>
 				{discountError && <div className="text-red-500">{discountError}</div>}
