@@ -19,8 +19,9 @@ import { Customer, Orderdata } from "@/lib/types";
 import AddAddress from "./addAddress";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import OrderSummary from "./orderSummary";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useSearchParams } from "next/navigation";
+import { clearCart } from "@/lib/store/features/cart/cartSlice";
 
 const FormSchema = z.object({
 	address: z.string({ required_error: "Please select an address" }),
@@ -38,6 +39,7 @@ const CustomerForm = () => {
 	const chosenCouponCode = React.useRef("");
 	const idempotencyKeyRef = React.useRef("");
 	const cart = useAppSelector((state) => state.cart);
+	const dispatch = useAppDispatch();
 
 	const searchParams = useSearchParams();
 
@@ -64,6 +66,7 @@ const CustomerForm = () => {
 			}
 
 			alert("Order placed successfully");
+			dispatch(clearCart());
 
 			// todo: This will happen if payment mode is Cash
 			// todo: clear the cart , and redirect the user to order status page
