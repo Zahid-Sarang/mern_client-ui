@@ -47,7 +47,10 @@ const Payment = ({ searchParams }: { searchParams: { success: string; orderId: s
 							<div className="flex items-center gap-2 ">
 								<LayoutDashboard size={20} />
 								<h2 className="text-base font-medium"> Order refrence:</h2>
-								<Link href={`/order-status/${searchParams.orderId}`} className="underline">
+								<Link
+									href={`/order/${searchParams.orderId}?restaurantId=${searchParams.restaurantId}`}
+									className="underline"
+								>
 									{searchParams.orderId}
 								</Link>
 							</div>
