@@ -63,10 +63,11 @@ const CustomerForm = () => {
 		onSuccess: (data: { paymentUrl: string | null }) => {
 			if (data.paymentUrl) {
 				window.location.href = data.paymentUrl;
+			} else {
+				dispatch(clearCart());
 			}
 
 			alert("Order placed successfully");
-			dispatch(clearCart());
 
 			// todo: This will happen if payment mode is Cash
 			// todo: clear the cart , and redirect the user to order status page

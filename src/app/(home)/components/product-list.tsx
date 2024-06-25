@@ -4,7 +4,7 @@ import ProductCard from "./product-card";
 import { Category, Product } from "@/lib/types";
 
 const ProductList = async ({ searchParams }: { searchParams: { restaurantId: string } }) => {
-	console.log("searchParams", searchParams);
+	
 	// todo: do concurent request => Promise.all()
 	const categoryResponse = await fetch(`${process.env.BACKEND_URL}/api/catalog/categories`, {
 		next: {

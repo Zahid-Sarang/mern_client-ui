@@ -1,10 +1,10 @@
 "use client";
-
 import { clearCart } from "@/lib/store/features/cart/cartSlice";
 import { useAppDispatch } from "@/lib/store/hooks";
 import React from "react";
 
-const CartCleaner = ({}) => {
+const CartCleaner = () => {
+	console.log(".....Cart is rendering........");
 	const dispatch = useAppDispatch();
 
 	React.useEffect(() => {

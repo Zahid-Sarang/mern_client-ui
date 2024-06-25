@@ -9,6 +9,7 @@ import CartCleaner from "../checkout/components/cartCleaner";
 
 const Payment = ({ searchParams }: { searchParams: { success: string; orderId: string; restaurantId: string } }) => {
 	const isOrderSuccess = searchParams.success === "true";
+	console.log("isOrderSuccess", isOrderSuccess);
 
 	return (
 		<>
@@ -63,7 +64,7 @@ const Payment = ({ searchParams }: { searchParams: { success: string; orderId: s
 				{isOrderSuccess ? (
 					<Button asChild className="mt-6">
 						<Link
-							href={`/order-status/${searchParams.orderId}?restaurantId=${searchParams.restaurantId}`}
+							href={`/order/${searchParams.orderId}?restaurantId=${searchParams.restaurantId}`}
 							className="flex items-center gap-2"
 						>
 							<ArrowLeft size={20} className="text-white" />
