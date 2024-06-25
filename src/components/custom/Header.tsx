@@ -51,7 +51,7 @@ const Header = async () => {
 							</Link>
 						</li>
 						<li>
-							<Link className="hover:text-primary cursor-pointer" href={"/"}>
+							<Link className="hover:text-primary cursor-pointer" href={"/orders"}>
 								Orders
 							</Link>
 						</li>
