@@ -1,21 +1,37 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+	Pagination,
+	PaginationContent,
+	PaginationEllipsis,
+	PaginationItem,
+	PaginationLink,
+	PaginationNext,
+	PaginationPrevious,
+} from "@/components/ui/pagination";
 import { Order } from "@/lib/types";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
-const Orders = async () => {
-	const response = await fetch(`${process.env.BACKEND_URL}/api/order/orders/mine`, {
-		headers: {
-			Authorization: `Bearer ${cookies().get("accessToken")?.value}`,
-		},
-	});
+const Orders = async ({ searchParams }: { searchParams: { currentPage: number; perPage: number } }) => {
+	const currentPage = searchParams.currentPage ? searchParams.currentPage : 1;
+	const perPage = searchParams.perPage ? searchParams.perPage : 8;
+
+	const response = await fetch(
+		`${process.env.BACKEND_URL}/api/order/orders/mine?currentPage=${currentPage}&perPage=${perPage}`,
+		{
+			headers: {
+				Authorization: `Bearer ${cookies().get("accessToken")?.value}`,
+			},
+		}
+	);
 	if (!response.ok) {
 		return <h1 className="text-base font-bold text-red-500">Error while fetching your order</h1>;
 	}
 
 	const orders = (await response.json()) || [];
+	const totalPages = Math.ceil(orders.total / Number(perPage));
 
 	return (
 		<div className="container mt-8">
@@ -25,7 +41,7 @@ const Orders = async () => {
 					<CardDescription>My complete order history.</CardDescription>
 				</CardHeader>
 				<CardContent>
-					{orders.length === 0 ? (
+					{orders.data.length === 0 ? (
 						"No orders yet"
 					) : (
 						<Table>
@@ -41,7 +57,7 @@ const Orders = async () => {
 								</TableRow>
 							</TableHeader>
 							<TableBody>
-								{orders.map((order: Order) => {
+								{orders.data.map((order: Order) => {
 									return (
 										<TableRow key={order._id}>
 											<TableCell className="font-medium">{order._id}</TableCell>
@@ -66,6 +82,34 @@ const Orders = async () => {
 					)}
 				</CardContent>
 			</Card>
+			<Pagination className="mt-5">
+				<PaginationContent>
+					<PaginationItem hidden={currentPage <= 1}>
+						<PaginationPrevious
+							href={`/orders?currentPage=${Number(currentPage) - 1}&perPage=${perPage}`}
+							className="text-primary hover:text-blue-700"
+						/>
+					</PaginationItem>
+					{Array.from({ length: totalPages }, (_, index) => (
+						<PaginationItem key={index}>
+							<PaginationLink
+								href={`/orders?currentPage=${index + 1}&perPage=${perPage}`}
+								className={`${
+									Number(currentPage) === index + 1 ? "bg-primary text-white" : "text-primary"
+								} hover:bg-primary hover:text-white px-3 py-1 rounded`}
+							>
+								{index + 1}
+							</PaginationLink>
+						</PaginationItem>
+					))}
+					<PaginationItem hidden={currentPage >= totalPages}>
+						<PaginationNext
+							href={`/orders?currentPage=${Number(currentPage) + 1}&perPage=${perPage}`}
+							className="text-primary hover:text-blue-700"
+						/>
+					</PaginationItem>
+				</PaginationContent>
+			</Pagination>
 		</div>
 	);
 };
