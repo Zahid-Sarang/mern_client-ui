@@ -15,7 +15,9 @@ const ToppingList = ({
 	useEffect(() => {
 		const fetchData = async () => {
 			const toppingResponse = await fetch(
-				`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=${searchParams.get("restaurantId")}`
+				`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=${searchParams.get(
+					"restaurantId"
+				)}&isPublish=true`
 			);
 			const toppings: { data: Topping[] } = await toppingResponse.json();
 			setToppings(toppings.data);
