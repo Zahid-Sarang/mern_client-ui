@@ -19,7 +19,11 @@ const Header = async () => {
 		},
 	});
 	if (!tenantResponse.ok) {
-		throw new Error("Failed to fetch tenant information");
+		return (
+			<h1 className="text-base font-bold text-red-500 flex justify-center items-center mt-5">
+				Failed to fetch tenant information
+			</h1>
+		);
 	}
 	const restaurants: { data: Tenant[] } = await tenantResponse.json();
 

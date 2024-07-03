@@ -6,6 +6,7 @@ import { Banknote, Coins, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cookies } from "next/headers";
 import { Order } from "@/lib/types";
+import ErrorComponent from "@/components/custom/error";
 
 const SingleOrder = async ({ params }: { params: { orderId: string } }) => {
 	const response = await fetch(
@@ -18,7 +19,11 @@ const SingleOrder = async ({ params }: { params: { orderId: string } }) => {
 	);
 
 	if (!response.ok) {
-		throw new Error("Failed to fetch order information");
+		return (
+			<h1 className="text-base font-bold text-red-500 flex justify-center items-center mt-5">
+				Failed to fetch order information
+			</h1>
+		);
 	}
 
 	const order: Order = await response.json();

@@ -12,7 +12,11 @@ const ProductList = async ({ searchParams }: { searchParams: { restaurantId: str
 	});
 
 	if (!categoryResponse.ok) {
-		throw new Error(" Failed to fetch categories");
+		return (
+			<h1 className="text-base font-bold text-red-500 flex justify-center items-center mt-5">
+				Failed to fetch categories
+			</h1>
+		);
 	}
 	const categories: Category[] = await categoryResponse.json();
 
