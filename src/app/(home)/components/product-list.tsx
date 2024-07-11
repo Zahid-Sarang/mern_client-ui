@@ -22,7 +22,7 @@ const ProductList = async ({ searchParams }: { searchParams: { restaurantId: str
 
 	// todo: add pagination
 	const productResponse = await fetch(
-		`${process.env.BACKEND_URL}/api/catalog/products?tenantId=${searchParams.restaurantId}&isPublish=true&perPage=10`
+		`${process.env.BACKEND_URL}/api/catalog/products?tenantId=${searchParams.restaurantId}&isPublish=true&perPage=50`
 	);
 
 	const products: { data: Product[] } = await productResponse.json();
